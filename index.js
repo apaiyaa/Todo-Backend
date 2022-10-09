@@ -1,10 +1,17 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-let TODOS = [];
+let TODOS = [
+  {
+    id: 123,
+    title: "test",
+    isComplete: false,
+  },
+];
 
 app.get("/", (req, res) => {
   res.json({ status: "success", data: TODOS, total: TODOS.length });
@@ -13,9 +20,9 @@ app.get("/", (req, res) => {
 app.post("/", (req, res) => {
   const { title } = req.body;
 
-  const data = { id: Date.now(), title };
+  const data = { id: Date.now(), title, isComplete: false };
   TODOS.push(data);
-  res.json({ status: "success", data: TODOS, total: TODOS.length });
+  res.json({ status: "success", data, total: TODOS.length });
 });
 
 app.put("/:id", (req, res) => {
@@ -23,10 +30,13 @@ app.put("/:id", (req, res) => {
   const { title, isComplete } = req.body;
 
   const updated = TODOS.map((todo) => {
-    if (todo.id === id) {
+    console.log("ada", todo.id == id, todo.id, id);
+    if (todo.id == id) {
+      console.log("masuk", todo);
       if (title) todo.title = title;
       if (isComplete) todo.isComplete = isComplete;
     }
+    return todo;
   });
 
   TODOS = updated;
@@ -37,10 +47,13 @@ app.put("/:id", (req, res) => {
 app.delete("/:id", (req, res) => {
   const { id } = req.params;
 
-  const updated = TODOS.filter((todo) => todo.id !== id);
+  const updated = TODOS.filter((todo) => todo.id != id);
 
   TODOS = updated;
-  res.json({ status: "success", data: TODOS, total: TODOS.length });
+  res.json({ status: "success", data: {}, total: TODOS.length });
 });
 
-app.listen(4000, () => console.log("server running on http://localhost:4000/"));
+const port = process.env.PORT || 4000;
+app.listen(port, () =>
+  console.log(`server running on http://localhost:${port}/`)
+);
