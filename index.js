@@ -30,9 +30,7 @@ app.put("/:id", (req, res) => {
   const { title, isComplete } = req.body;
 
   const updated = TODOS.map((todo) => {
-    console.log("ada", todo.id == id, todo.id, id);
     if (todo.id == id) {
-      console.log("masuk", todo);
       if (title) todo.title = title;
       if (isComplete) todo.isComplete = isComplete;
     }
